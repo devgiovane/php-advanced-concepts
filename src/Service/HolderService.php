@@ -4,9 +4,9 @@
 namespace Study\Service;
 
 
-use Study\Domain\Entity\Holder;
-use Study\Domain\Infrastructure\Repository\HolderRepository;
-use Study\Domain\Infrastructure\Persistence\ConnectionFactory;
+use Study\Domain\Entities\Holder;
+use Study\Infrastructure\Repository\HolderRepository;
+use Study\Infrastructure\Persistence\ConnectionFactory;
 /**
  * Class HolderService
  * @package Study\Service

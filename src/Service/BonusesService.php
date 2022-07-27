@@ -4,7 +4,7 @@
 namespace Study\Service;
 
 
-use Study\Domain\Entity\Employee;
+use Study\Domain\Entities\Employee;
 /**
  * Class BonusesService
  * @package Study\Service

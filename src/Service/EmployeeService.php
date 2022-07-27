@@ -4,9 +4,9 @@
 namespace Study\Service;
 
 
-use Study\Domain\Entity\Employee;
-use Study\Domain\Infrastructure\Persistence\ConnectionFactory;
-use Study\Domain\Infrastructure\Repository\EmployeeRepository;
+use Study\Domain\Entities\Employee;
+use Study\Infrastructure\Persistence\ConnectionFactory;
+use Study\Infrastructure\Repository\EmployeeRepository;
 /**
  * Class EmployeeService
  * @package Study\Service

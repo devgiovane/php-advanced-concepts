@@ -1,8 +1,12 @@
+<img src="./php.png" width="80" height="80" alt="logo">
+
 # PHP Advanced Concepts
 
 ### About
 
-Concepts:
+> Studies of some advanced concepts in php.
+
+### Concepts used
 
 - Domain Driven Designer
 - Repository pattern
@@ -13,10 +17,11 @@ Concepts:
 ### Commands
 
 ```bash
-php config.php // configure database
-
-php account.php
-php auth.php
-php bonus.php
-php holder.php
+php console/database.php up // create database
+php console/database.php down // drop database
+php console/holder.php // create holder
+php console/account.php // create account
 ```
+
+### Create by
+© [Giovane Santos](https://giovanesantossilva.github.io/)

@@ -4,11 +4,11 @@
 namespace Study\Service;
 
 
-use Study\Domain\Entity\AccountSaving;
-use Study\Domain\Entity\AccountCurrent;
-use Study\Domain\Infrastructure\Persistence\ConnectionFactory;
-use Study\Domain\Infrastructure\Repository\AccountSavingRepository;
-use Study\Domain\Infrastructure\Repository\AccountCurrentRepository;
+use Study\Domain\Entities\AccountSaving;
+use Study\Domain\Entities\AccountCurrent;
+use Study\Infrastructure\Persistence\ConnectionFactory;
+use Study\Infrastructure\Repository\AccountSavingRepository;
+use Study\Infrastructure\Repository\AccountCurrentRepository;
 /**
  * Class AccountService
  * @package Study\Service

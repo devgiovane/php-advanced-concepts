@@ -4,7 +4,7 @@
 namespace Study\Migration;
 
 
-use Study\Domain\Infrastructure\Persistence\ConnectionFactory;
+use Study\Infrastructure\Persistence\ConnectionFactory;
 /**
  * Class AccountCurrentMigration
  * @package Study\Migration

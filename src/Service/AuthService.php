@@ -4,7 +4,7 @@
 namespace Study\Service;
 
 
-use Study\Domain\Entity\Authenticateable;
+use Study\Domain\Entities\Authenticateable;
 /**
  * Class AuthService
  * @package Study\Service

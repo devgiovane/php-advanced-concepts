@@ -4,9 +4,9 @@
 namespace Study\Service;
 
 
-use Study\Domain\Entity\Principal;
-use Study\Domain\Infrastructure\Persistence\ConnectionFactory;
-use Study\Domain\Infrastructure\Repository\PrincipalRepository;
+use Study\Domain\Entities\Principal;
+use Study\Infrastructure\Persistence\ConnectionFactory;
+use Study\Infrastructure\Repository\PrincipalRepository;
 /**
  * Class PrincipalService
  * @package Study\Service
