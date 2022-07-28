@@ -9,7 +9,7 @@ use Study\Infrastructure\Persistence\ConnectionFactory;
  * Class HolderMigration
  * @package Study\Migration
  */
-class HolderMigration extends Migration implements MigrationInterface
+final class HolderMigration extends Migration implements MigrationInterface
 {
     /**
      * @var ConnectionFactory
@@ -31,7 +31,15 @@ class HolderMigration extends Migration implements MigrationInterface
      */
     public function up(): void
     {
-        $this->connectionFactory->prepare("CREATE TABLE IF NOT EXISTS holder (id INTEGER PRIMARY KEY NOT NULL, id_address INT NOT NULL, FOREIGN KEY(id) REFERENCES person(id) ON DELETE CASCADE, FOREIGN KEY(id_address) REFERENCES address(id) ON DELETE SET NULL);");
+        $query = "
+            CREATE TABLE IF NOT EXISTS holder (
+                id INTEGER PRIMARY KEY NOT NULL, 
+                id_address INT NOT NULL, 
+                FOREIGN KEY(id) REFERENCES person(id) ON DELETE CASCADE, 
+                FOREIGN KEY(id_address) REFERENCES address(id) ON DELETE SET NULL
+            );
+        ";
+        $this->connectionFactory->prepare($query);
         echo "up " . __CLASS__ . ' ' . ($this->connectionFactory->execute() ? 'success' : 'error') . PHP_EOL;
     }
 

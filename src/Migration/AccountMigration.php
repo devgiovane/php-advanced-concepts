@@ -9,7 +9,7 @@ use Study\Infrastructure\Persistence\ConnectionFactory;
  * Class AccountMigration
  * @package Study\Migration
  */
-class AccountMigration extends Migration implements MigrationInterface
+final class AccountMigration extends Migration implements MigrationInterface
 {
     /**
      * @var ConnectionFactory
@@ -31,7 +31,17 @@ class AccountMigration extends Migration implements MigrationInterface
      */
     public function up(): void
     {
-        $this->connectionFactory->prepare("CREATE TABLE IF NOT EXISTS account (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, id_holder INT NOT NULL, balance FLOAT, FOREIGN KEY(id_holder) REFERENCES holder(id) ON DELETE CASCADE);");
+        $query = "
+            CREATE TABLE IF NOT EXISTS account (
+                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+                holder_id INT NOT NULL, 
+                balance FLOAT,
+                type TEXT NOT NULL,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY(holder_id) REFERENCES holder(id) ON DELETE CASCADE
+             );
+        ";
+        $this->connectionFactory->prepare($query);
         echo "up " . __CLASS__ . ' ' . ($this->connectionFactory->execute() ? 'success' : 'error') . PHP_EOL;
     }
 

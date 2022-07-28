@@ -12,7 +12,7 @@ use PDOStatement;
  */
 class ConnectionFactory
 {
-    protected static $path = __DIR__ . '/../../../../database.sqlite';
+    protected static $path = __DIR__ . '/../../../database.sqlite';
 
     /**
      * @var PDO

@@ -9,7 +9,7 @@ use Study\Infrastructure\Persistence\ConnectionFactory;
  * Class Person
  * @package Study\Migration
  */
-class PersonMigration extends Migration implements MigrationInterface
+final class PersonMigration extends Migration implements MigrationInterface
 {
     /**
      * @var ConnectionFactory
@@ -31,7 +31,17 @@ class PersonMigration extends Migration implements MigrationInterface
      */
     public function up(): void
     {
-        $this->connectionFactory->prepare("CREATE TABLE IF NOT EXISTS person (id INTEGER PRIMARY KEY AUTOINCREMENT, cpf TEXT NOT NULL, name TEXT NOT NULL, last_name TEXT NOT NULL);");
+        $query = "
+            CREATE TABLE IF NOT EXISTS person (
+                id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                cpf TEXT NOT NULL,
+                name TEXT NOT NULL, 
+                last_name TEXT NOT NULL,
+                type TEXT NOT NULL,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            );
+        ";
+        $this->connectionFactory->prepare($query);
         echo "up " . __CLASS__ . ' ' . ($this->connectionFactory->execute() ? 'success' : 'error') . PHP_EOL;
     }
 

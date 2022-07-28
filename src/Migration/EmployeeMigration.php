@@ -9,7 +9,7 @@ use Study\Infrastructure\Persistence\ConnectionFactory;
  * Class EmployeeMigration
  * @package Study\Migration
  */
-class EmployeeMigration extends Migration implements MigrationInterface
+final class EmployeeMigration extends Migration implements MigrationInterface
 {
     /**
      * @var ConnectionFactory
@@ -31,7 +31,15 @@ class EmployeeMigration extends Migration implements MigrationInterface
      */
     public function up(): void
     {
-        $this->connectionFactory->prepare("CREATE TABLE IF NOT EXISTS employee (id INTEGER PRIMARY KEY NOT NULL, office TEXT, wage FLOAT, FOREIGN KEY(id) REFERENCES person(id) ON DELETE CASCADE);");
+        $query = "
+            CREATE TABLE IF NOT EXISTS employee (
+                id INTEGER PRIMARY KEY NOT NULL, 
+                office TEXT, 
+                wage FLOAT, 
+                FOREIGN KEY(id) REFERENCES person(id) ON DELETE CASCADE
+            );
+        ";
+        $this->connectionFactory->prepare($query);
         echo "up " . __CLASS__ . ' ' . ($this->connectionFactory->execute() ? 'success' : 'error') . PHP_EOL;
     }
 

@@ -9,7 +9,7 @@ use Study\Infrastructure\Persistence\ConnectionFactory;
  * Class AddressMigration
  * @package Study\Migration
  */
-class AddressMigration extends Migration implements MigrationInterface
+final class AddressMigration extends Migration implements MigrationInterface
 {
     /**
      * @var ConnectionFactory
@@ -31,7 +31,15 @@ class AddressMigration extends Migration implements MigrationInterface
      */
     public function up(): void
     {
-        $this->connectionFactory->prepare("CREATE TABLE IF NOT EXISTS address (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, city TEXT, road TEXT, number INT );");
+        $query = "
+            CREATE TABLE IF NOT EXISTS address (
+                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+                city TEXT, 
+                road TEXT, 
+                number INT 
+            );
+        ";
+        $this->connectionFactory->prepare($query);
         echo "up " . __CLASS__ . ' ' . ($this->connectionFactory->execute() ? 'success' : 'error') . PHP_EOL;
     }
 
