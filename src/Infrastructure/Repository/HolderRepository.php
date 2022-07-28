@@ -35,7 +35,7 @@ class HolderRepository implements \Study\Domain\Repository\HolderRepository
 
     /**
      * @param int $id
-     * @return array|mixed
+     * @return Holder
      */
     public function find(int $id): Holder
     {
@@ -98,38 +98,40 @@ class HolderRepository implements \Study\Domain\Repository\HolderRepository
     {
         $this->connectionFactory->beginTransaction();
 
-        $isPersonCreated = $isHolderCreated = false;
         $isAddressCreated = $this->addressRepository->save($holder->getAddress());
+        if (!$isAddressCreated) {
+            $this->connectionFactory->rollBack();
+            return null;
+        }
 
-        if($isAddressCreated) {
-            $query = "INSERT INTO person (cpf, name, last_name) VALUES (:cpf, :name, :last_name);";
-            $this->connectionFactory->prepare($query)
-                ->bind(':cpf', $holder->getCpf())
-                ->bind(':name', $holder->getName())
-                ->bind(':last_name', $holder->getLastName());
+        $query = "INSERT INTO person (cpf, name, last_name) VALUES (:cpf, :name, :last_name);";
+        $this->connectionFactory->prepare($query)
+            ->bind(':cpf', $holder->getCpf())
+            ->bind(':name', $holder->getName())
+            ->bind(':last_name', $holder->getLastName());
 
-            $isPersonCreated = $this->connectionFactory->execute();
+        $isPersonCreated = $this->connectionFactory->execute();
+        if (!$isPersonCreated) {
+            $this->connectionFactory->rollBack();
+            return null;
         }
 
         $idPersonId = $this->connectionFactory->getLastInsertedId();
 
-        if($isPersonCreated) {
-            $query = "INSERT INTO holder (id, id_address) VALUES (:id, :id_address)";
+        $query = "INSERT INTO holder (id, id_address) VALUES (:id, :id_address)";
+        $this->connectionFactory->prepare($query)
+            ->bind(':id', $idPersonId)
+            ->bind(':id_address', $isAddressCreated);
 
-            $this->connectionFactory->prepare($query)
-                ->bind(':id', $idPersonId)
-                ->bind(':id_address', $isAddressCreated);
+        $isHolderCreated = $this->connectionFactory->execute();
 
-            $isHolderCreated = $this->connectionFactory->execute();
+        if (!$isHolderCreated) {
+            $this->connectionFactory->rollBack();
+            return null;
         }
 
-        if($isHolderCreated) {
-            $this->connectionFactory->commit();
-            return $idPersonId;
-        }
-
-        $this->connectionFactory->rollBack();
-        return null;
+        $this->connectionFactory->commit();
+        return $idPersonId;
     }
 
     /**

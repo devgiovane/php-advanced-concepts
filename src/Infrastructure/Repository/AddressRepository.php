@@ -28,7 +28,7 @@ class AddressRepository implements \Study\Domain\Repository\AddressRepository
 
     /**
      * @param int $id
-     * @return mixed
+     * @return Address
      */
     public function find(int $id): Address
     {
