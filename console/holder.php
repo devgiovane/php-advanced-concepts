@@ -12,8 +12,10 @@ require_once 'autoload.php';
 
 $connectionFactory = new ConnectionFactory();
 $connectionFactory->create();
+
 $holderRepository = new HolderRepository($connectionFactory);
 
 $createHolderUseCase = new CreateHolder($holderRepository);
 $createHolderCommand = new CreateHolderCommand($createHolderUseCase);
-$createHolderCommand->handle();
+$response = $createHolderCommand->handle();
+var_dump($response);

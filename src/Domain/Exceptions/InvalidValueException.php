@@ -4,7 +4,7 @@
 namespace Study\Domain\Exceptions;
 
 
-class InvalidValueException extends \InvalidArgumentException
+final class InvalidValueException extends \InvalidArgumentException
 {
     public function __construct()
     {

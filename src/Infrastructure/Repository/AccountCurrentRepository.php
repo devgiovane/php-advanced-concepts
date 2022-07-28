@@ -4,6 +4,7 @@
 namespace Study\Infrastructure\Repository;
 
 
+use Study\Domain\Entities\Account;
 use Study\Domain\Entities\Holder;
 use Study\Domain\Entities\Address;
 use Study\Domain\Entities\AccountCurrent;
@@ -95,10 +96,10 @@ class AccountCurrentRepository implements \Study\Domain\Repository\AccountCurren
     }
 
     /**
-     * @param AccountCurrent $accountCurrent
+     * @param Account $accountCurrent
      * @return int|null
      */
-    public function save(AccountCurrent $accountCurrent): ?int
+    public function save(Account $accountCurrent): ?int
     {
         $this->connectionFactory->beginTransaction();
 
@@ -131,10 +132,10 @@ class AccountCurrentRepository implements \Study\Domain\Repository\AccountCurren
     }
 
     /**
-     * @param AccountCurrent $accountCurrent
+     * @param Account $accountCurrent
      * @return bool
      */
-    public function remove(AccountCurrent $accountCurrent): bool
+    public function remove(Account $accountCurrent): bool
     {
         $query = "DELETE FROM account WHERE id = :id";
         $this->connectionFactory->prepare($query)

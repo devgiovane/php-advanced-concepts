@@ -6,7 +6,7 @@ namespace Study\Domain\Exceptions;
  * Class InsufficientFundsException
  * @package Study\Domain\Exceptions
  */
-class InsufficientFundsException extends \DomainException
+final class InsufficientFundsException extends \DomainException
 {
     public function __construct(float $value, float $balance)
     {

@@ -4,6 +4,7 @@
 namespace Study\Infrastructure\Repository;
 
 
+use Study\Domain\Entities\Account;
 use Study\Domain\Entities\Holder;
 use Study\Domain\Entities\Address;
 use Study\Domain\Entities\AccountSaving;
@@ -95,10 +96,10 @@ class AccountSavingRepository implements \Study\Domain\Repository\AccountSavingR
     }
 
     /**
-     * @param AccountSaving $accountSaving
+     * @param Account $accountSaving
      * @return int|null
      */
-    public function save(AccountSaving $accountSaving): ?int
+    public function save(Account $accountSaving): ?int
     {
         $this->connectionFactory->beginTransaction();
 
@@ -131,10 +132,10 @@ class AccountSavingRepository implements \Study\Domain\Repository\AccountSavingR
     }
 
     /**
-     * @param AccountSaving $accountSaving
+     * @param Account $accountSaving
      * @return bool
      */
-    public function remove(AccountSaving $accountSaving): bool
+    public function remove(Account $accountSaving): bool
     {
         $query = "DELETE FROM account WHERE id = :id";
         $this->connectionFactory->prepare($query)
