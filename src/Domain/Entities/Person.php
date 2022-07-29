@@ -2,12 +2,24 @@
 
 
 namespace Study\Domain\Entities;
+
+
+
+use Study\Infrastructure\Repository\EmployeeRepository;
+use Study\Infrastructure\Repository\HolderRepository;
+use Study\Infrastructure\Repository\PrincipalRepository;
+
 /**
  * Class Person
  * @package Study\Domain\Entities
  */
 abstract class Person
 {
+    public const TYPES = [
+        'holder' => HolderRepository::class,
+        'employee' => EmployeeRepository::class,
+        'principal' => PrincipalRepository::class
+    ];
     /**
      * @var int|null
      */

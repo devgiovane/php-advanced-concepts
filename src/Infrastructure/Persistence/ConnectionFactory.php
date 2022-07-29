@@ -53,6 +53,14 @@ class ConnectionFactory
     }
 
     /**
+     * @return mixed
+     */
+    public function getOne()
+    {
+        return $this->statement->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /**
      * @return array
      */
     public function getAll(): array

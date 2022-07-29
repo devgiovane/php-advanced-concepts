@@ -20,9 +20,9 @@ class AccountCurrentRepository implements AccountCurrentRepositoryInterface
     private $connectionFactory;
 
     /**
-     * @var HolderRepository
+     * @var PersonRepository
      */
-    private $holderRepository;
+    private $personRepository;
 
     /**
      * HolderRepository constructor.
@@ -31,7 +31,7 @@ class AccountCurrentRepository implements AccountCurrentRepositoryInterface
     public function __construct(ConnectionFactory $connectionFactory)
     {
         $this->connectionFactory = $connectionFactory;
-        $this->holderRepository = new HolderRepository($this->connectionFactory);
+        $this->personRepository = new PersonRepository($this->connectionFactory);
     }
 
     /**
@@ -75,7 +75,7 @@ class AccountCurrentRepository implements AccountCurrentRepositoryInterface
         foreach ($data as $item) {
             $accountList[] = new AccountCurrent(
                 (int) $item['id'],
-                $this->holderRepository->find((int) $item['holder_id']),
+                $this->personRepository->find((int) $item['holder_id']),
                 (float) $item['balance'],
                 (string) $item['type']
             );
