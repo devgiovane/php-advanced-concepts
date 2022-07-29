@@ -6,11 +6,12 @@ namespace Study\Infrastructure\Repository;
 
 use Study\Domain\Entities\Employee;
 use Study\Infrastructure\Persistence\ConnectionFactory;
+use Study\Domain\Repository\EmployeeRepository as EmployeeRepositoryInterface;
 /**
  * Class EmployeeRepository
  * @package Study\Infrastructure\Repository
  */
-class EmployeeRepository implements \Study\Domain\Repository\EmployeeRepository
+class EmployeeRepository implements EmployeeRepositoryInterface
 {
     /**
      * @var ConnectionFactory
@@ -71,7 +72,8 @@ class EmployeeRepository implements \Study\Domain\Repository\EmployeeRepository
                 (string) $item['name'],
                 (string) $item['last_name'],
                 (string) $item['office'],
-                (float) $item['wage']
+                (float) $item['wage'],
+                (string) $item['type']
             );
         }
         return $employeeList;
@@ -84,36 +86,30 @@ class EmployeeRepository implements \Study\Domain\Repository\EmployeeRepository
     public function save(Employee $employee): ?int
     {
         $this->connectionFactory->beginTransaction();
-
-        $isPrincipalCreated = false;
-
-        $query = "INSERT INTO person (cpf, name, last_name) VALUES (:cpf, :name, :last_name);";
+        $query = "INSERT INTO person (cpf, name, last_name) VALUES (:cpf, :name, :last_name, :type);";
         $this->connectionFactory->prepare($query)
             ->bind(':cpf', $employee->getCpf())
             ->bind(':name', $employee->getName())
-            ->bind(':last_name', $employee->getLastName());
-
+            ->bind(':last_name', $employee->getLastName())
+            ->bind(':type', $employee->getType());
         $isPersonCreated = $this->connectionFactory->execute();
-
+        if (!$isPersonCreated) {
+            $this->connectionFactory->rollBack();
+            return null;
+        }
         $idPersonId = $this->connectionFactory->getLastInsertedId();
-
-        if($isPersonCreated) {
-            $query = "INSERT INTO employee (id, office, wage) VALUES (:id, :office, :wage)";
-            $this->connectionFactory->prepare($query)
-                ->bind(':id', $idPersonId)
-                ->bind(':office', $employee->getOffice())
-                ->bind(':wage', $employee->getWage());
-
-            $isPrincipalCreated = $this->connectionFactory->execute();
+        $query = "INSERT INTO employee (id, office, wage) VALUES (:id, :office, :wage)";
+        $this->connectionFactory->prepare($query)
+            ->bind(':id', $idPersonId)
+            ->bind(':office', $employee->getOffice())
+            ->bind(':wage', $employee->getWage());
+        $isPrincipalCreated = $this->connectionFactory->execute();
+        if (!$isPrincipalCreated) {
+            $this->connectionFactory->rollBack();
+            return null;
         }
-
-        if($isPrincipalCreated) {
-            $this->connectionFactory->commit();
-            return $idPersonId;
-        }
-
-        $this->connectionFactory->rollBack();
-        return null;
+        $this->connectionFactory->commit();
+        return $idPersonId;
     }
 
     /**

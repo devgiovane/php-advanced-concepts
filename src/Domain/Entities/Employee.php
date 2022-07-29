@@ -6,7 +6,7 @@ namespace Study\Domain\Entities;
  * Class Employee
  * @package Study\Domain\Entities
  */
-final class Employee extends Person implements Serializable
+final class Employee extends Person
 {
     /**
      * @var string
@@ -28,9 +28,9 @@ final class Employee extends Person implements Serializable
      * @param string $office
      * @param float $wage
      */
-    public function __construct(?int $id, string $cpf, string $name, string $lastName, string $office, float $wage)
+    public function __construct(?int $id, string $cpf, string $name, string $lastName, string $office, float $wage, string $type = "employee")
     {
-        parent::__construct($id, $cpf, $name, $lastName);
+        parent::__construct($id, $cpf, $name, $lastName, $type);
         $this->office = $office;
         $this->wage = $wage;
     }
@@ -59,17 +59,4 @@ final class Employee extends Person implements Serializable
         return $this->getWage() * 0.1;
     }
 
-    /**
-     * @return array
-     */
-    public function toArray(): array
-    {
-        return array(
-            'id' => $this->getId(),
-            'cpf' => $this->getCpf(),
-            'name' => $this->getFullName(),
-            'office' => $this->getOffice(),
-            'wage' => $this->getWage()
-        );
-    }
 }

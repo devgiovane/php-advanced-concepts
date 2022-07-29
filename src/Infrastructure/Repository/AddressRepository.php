@@ -6,11 +6,12 @@ namespace Study\Infrastructure\Repository;
 
 use Study\Domain\Entities\Address;
 use Study\Infrastructure\Persistence\ConnectionFactory;
+use Study\Domain\Repository\AddressRepository as AddressRepositoryInterface;
 /**
  * Class AddressRepository
  * @package Study\Infrastructure\Repository
  */
-class AddressRepository implements \Study\Domain\Repository\AddressRepository
+class AddressRepository implements AddressRepositoryInterface
 {
     /**
      * @var ConnectionFactory

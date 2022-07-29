@@ -6,7 +6,7 @@ namespace Study\Domain\Entities;
  * Class Principal
  * @package Study\Domain\Entities
  */
-final class Principal extends Person implements Authenticateable, Serializable
+final class Principal extends Person
 {
     /**
      * @var float
@@ -27,10 +27,11 @@ final class Principal extends Person implements Authenticateable, Serializable
      * @param string $lastName
      * @param string $password
      * @param float $wage
+     * @param string $type
      */
-    public function __construct(?int $id, string $cpf, string $name, string $lastName, string $password, float $wage)
+    public function __construct(?int $id, string $cpf, string $name, string $lastName, string $password, float $wage, string $type = "principal")
     {
-        parent::__construct($id, $cpf, $name, $lastName);
+        parent::__construct($id, $cpf, $name, $lastName, $type);
         $this->password = $password;
         $this->wage = $wage;
     }
@@ -68,16 +69,4 @@ final class Principal extends Person implements Authenticateable, Serializable
         return $this->getPassword() === $password;
     }
 
-    /**
-     * @return array
-     */
-    public function toArray(): array
-    {
-        return array(
-            'id' => $this->getId(),
-            'cpf' => $this->getCpf(),
-            'name' => $this->getFullName(),
-            'wage' => $this->getWage(),
-        );
-    }
 }

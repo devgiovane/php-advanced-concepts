@@ -14,9 +14,9 @@ final class AccountSaving extends Account
      * @param Holder $holder
      * @param float $balance
      */
-    public function __construct(?int $id, Holder $holder, float $balance)
+    public function __construct(?int $id, Holder $holder, float $balance, string $type = "saving")
     {
-        parent::__construct($id, $holder, $balance);
+        parent::__construct($id, $holder, $balance, $type);
     }
 
     /**

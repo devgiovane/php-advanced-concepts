@@ -9,11 +9,12 @@ use Study\Domain\Entities\Holder;
 use Study\Domain\Entities\Address;
 use Study\Domain\Entities\AccountSaving;
 use Study\Infrastructure\Persistence\ConnectionFactory;
+use Study\Domain\Repository\AccountSavingRepository as AccountSavingRepositoryInterface;
 /**
  * Class AccountSavingRepository
  * @package Study\Infrastructure\Repository
  */
-class AccountSavingRepository implements \Study\Domain\Repository\AccountSavingRepository
+class AccountSavingRepository implements AccountSavingRepositoryInterface
 {
     /**
      * @var ConnectionFactory
@@ -38,7 +39,7 @@ class AccountSavingRepository implements \Study\Domain\Repository\AccountSavingR
         $query = "
             SELECT * FROM account_saving AS acs
             INNER JOIN account AS a ON a.id = acs.id 
-            INNER JOIN person AS p ON a.id_holder = p.id
+            INNER JOIN person AS p ON a.holder_id = p.id
             INNER JOIN holder AS h ON p.id = h.id   
             INNER JOIN address AS ad ON h.id_address = ad.id
             WHERE a.id = :id;
@@ -58,9 +59,9 @@ class AccountSavingRepository implements \Study\Domain\Repository\AccountSavingR
         $query = "
             SELECT * FROM account_saving AS acs 
             INNER JOIN account AS a ON a.id = acs.id 
-            INNER JOIN person AS p ON a.id_holder = p.id
+            INNER JOIN person AS p ON a.holder_id = p.id
             INNER JOIN holder AS h ON p.id = h.id   
-            INNER JOIN address AS ad ON h.id_address = ad.id;
+            INNER JOIN address AS ad ON h.address_id = ad.id;
         ";
         $this->connectionFactory->query($query);
         return $this->hydrateAccount();
@@ -88,7 +89,8 @@ class AccountSavingRepository implements \Study\Domain\Repository\AccountSavingR
                         (int) $item['number']
                     )
                 ),
-                (float) $item['balance']
+                (float) $item['balance'],
+                (string) $item['type']
             );
 
         }
@@ -96,50 +98,44 @@ class AccountSavingRepository implements \Study\Domain\Repository\AccountSavingR
     }
 
     /**
-     * @param Account $accountSaving
+     * @param Account $account
      * @return int|null
      */
-    public function save(Account $accountSaving): ?int
+    public function save(Account $account): ?int
     {
         $this->connectionFactory->beginTransaction();
-
-        $isAccountSavingCreated = false;
-
-        $query = "INSERT INTO account (id_holder, balance) VALUES (:id_holder, :balance);";
+        $query = "INSERT INTO account (holder_id, balance, type) VALUES (:id_holder, :balance, :type);";
         $this->connectionFactory->prepare($query)
-            ->bind(':id_holder', $accountSaving->getHolder()->getId())
-            ->bind(':balance', $accountSaving->getBalance());
-
+            ->bind(':id_holder', $account->getHolder()->getId())
+            ->bind(':balance', $account->getBalance())
+            ->bind(':type', $account->getType());
         $isAccountCreated = $this->connectionFactory->execute();
-
-        if($isAccountCreated) {
-            $isAccountId = $this->connectionFactory->getLastInsertedId();
-
-            $query = "INSERT INTO account_saving (id) VALUES (:id);";
-            $this->connectionFactory->prepare($query)
-                ->bind(':id', $isAccountId);
-
-            $isAccountSavingCreated = $this->connectionFactory->execute();
+        if (!$isAccountCreated) {
+            $this->connectionFactory->rollBack();
+            return null;
         }
-
-        if($isAccountSavingCreated) {
-            $this->connectionFactory->commit();
-            return $isAccountCreated;
+        $isAccountId = $this->connectionFactory->getLastInsertedId();
+        $query = "INSERT INTO account_saving (id) VALUES (:id);";
+        $this->connectionFactory->prepare($query)
+            ->bind(':id', $isAccountId);
+        $isAccountSavingCreated = $this->connectionFactory->execute();
+        if (!$isAccountSavingCreated) {
+            $this->connectionFactory->rollBack();
+            return null;
         }
-
-        $this->connectionFactory->rollBack();
-        return null;
+        $this->connectionFactory->commit();
+        return $isAccountId;
     }
 
     /**
-     * @param Account $accountSaving
+     * @param Account $account
      * @return bool
      */
-    public function remove(Account $accountSaving): bool
+    public function remove(Account $account): bool
     {
         $query = "DELETE FROM account WHERE id = :id";
         $this->connectionFactory->prepare($query)
-            ->bind(':id', $accountSaving->getId());
+            ->bind(':id', $account->getId());
 
         return $this->connectionFactory->execute();
     }

@@ -71,7 +71,8 @@ class PrincipalRepository implements \Study\Domain\Repository\PrincipalRepositor
                 (string) $item['name'],
                 (string) $item['last_name'],
                 (string) $item['password'],
-                (float) $item['wage']
+                (float) $item['wage'],
+                (string) $item['type']
             );
         }
         return $principalList;
@@ -84,36 +85,30 @@ class PrincipalRepository implements \Study\Domain\Repository\PrincipalRepositor
     public function save(Principal $principal): ?int
     {
         $this->connectionFactory->beginTransaction();
-
-        $isPrincipalCreated = false;
-
-        $query = "INSERT INTO person (cpf, name, last_name) VALUES (:cpf, :name, :last_name);";
+        $query = "INSERT INTO person (cpf, name, last_name) VALUES (:cpf, :name, :last_name, :type);";
         $this->connectionFactory->prepare($query)
             ->bind(':cpf', $principal->getCpf())
             ->bind(':name', $principal->getName())
-            ->bind(':last_name', $principal->getLastName());
-
+            ->bind(':last_name', $principal->getLastName())
+            ->bind(':type', $principal->getType());
         $isPersonCreated = $this->connectionFactory->execute();
-
         $idPersonId = $this->connectionFactory->getLastInsertedId();
-
-        if($isPersonCreated) {
-            $query = "INSERT INTO principal (id, password, wage) VALUES (:id, :password, :wage)";
-            $this->connectionFactory->prepare($query)
-                ->bind(':id', $idPersonId)
-                ->bind(':password', $principal->getPassword())
-                ->bind(':wage', $principal->getWage());
-
-            $isPrincipalCreated = $this->connectionFactory->execute();
+        if (!$isPersonCreated) {
+            $this->connectionFactory->rollBack();
+            return null;
         }
-
-        if($isPrincipalCreated) {
-            $this->connectionFactory->commit();
-            return $idPersonId;
+        $query = "INSERT INTO principal (id, password, wage) VALUES (:id, :password, :wage)";
+        $this->connectionFactory->prepare($query)
+            ->bind(':id', $idPersonId)
+            ->bind(':password', $principal->getPassword())
+            ->bind(':wage', $principal->getWage());
+        $isPrincipalCreated = $this->connectionFactory->execute();
+        if (!$isPrincipalCreated) {
+            $this->connectionFactory->rollBack();
+            return null;
         }
-
-        $this->connectionFactory->rollBack();
-        return null;
+        $this->connectionFactory->commit();
+        return $idPersonId;
     }
 
     /**

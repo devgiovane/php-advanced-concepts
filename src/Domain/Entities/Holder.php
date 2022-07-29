@@ -6,7 +6,7 @@ namespace Study\Domain\Entities;
  * Class Holder
  * @package Study\Domain\Entities
  */
-final class Holder extends Person implements Serializable
+final class Holder extends Person
 {
     /**
      * @var Address
@@ -21,10 +21,11 @@ final class Holder extends Person implements Serializable
      * @param string $name
      * @param string $lastName
      * @param Address $address
+     * @param string $type
      */
-    public function __construct(?int $id, string $cpf, string $name, string $lastName, Address $address)
+    public function __construct(?int $id, string $cpf, string $name, string $lastName, Address $address, string $type = "holder")
     {
-        parent::__construct($id, $cpf, $name, $lastName);
+        parent::__construct($id, $cpf, $name, $lastName, $type);
         $this->address = $address;
     }
 
@@ -36,15 +37,4 @@ final class Holder extends Person implements Serializable
         return $this->address;
     }
 
-    /**
-     * @return array
-     */
-    public function toArray(): array
-    {
-        return array(
-            'id' => $this->getId(),
-            'cpf' => $this->getCpf(),
-            'name' => $this->getFullName()
-        );
-    }
 }

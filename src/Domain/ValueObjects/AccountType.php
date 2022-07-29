@@ -6,10 +6,10 @@ namespace Study\Domain\ValueObjects;
 
 use Study\Domain\Exceptions\InvalidAccountTypeException;
 /**
- * Class TypeAccount
+ * Class AccountType
  * @package Study\Domain\ValueObjects
  */
-class TypeAccount
+class AccountType
 {
     public const CURRENT = 'current';
     public const SAVING = 'saving';
@@ -20,7 +20,7 @@ class TypeAccount
     private $type;
 
     /**
-     * TypeAccount constructor.
+     * AccountType constructor.
      * @param string $type
      */
     public function __construct(string $type)

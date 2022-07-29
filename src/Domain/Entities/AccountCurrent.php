@@ -9,17 +9,18 @@ use Study\Domain\Exceptions\InsufficientFundsException;
  * Class AccountCurrent
  * @package Study\Domain\Entities
  */
-final class AccountCurrent extends Account implements Serializable
+final class AccountCurrent extends Account
 {
     /**
      * AccountCurrent constructor.
      * @param int|null $id
      * @param Holder $holder
      * @param float $balance
+     * @param string $type
      */
-    public function __construct(?int $id, Holder $holder, float $balance)
+    public function __construct(?int $id, Holder $holder, float $balance, string $type = "current")
     {
-        parent::__construct($id, $holder, $balance);
+        parent::__construct($id, $holder, $balance, $type);
     }
 
     /**
@@ -43,16 +44,4 @@ final class AccountCurrent extends Account implements Serializable
         return 0.05;
     }
 
-    /**
-     * @return array
-     */
-    public function toArray(): array
-    {
-        return array(
-            'id' => $this->getId(),
-            'holder' => $this->getHolder()->toArray(),
-            'balance' => $this->getBalance(),
-            'type' => 'current'
-        );
-    }
 }

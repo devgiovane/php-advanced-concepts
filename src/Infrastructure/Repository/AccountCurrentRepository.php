@@ -5,20 +5,24 @@ namespace Study\Infrastructure\Repository;
 
 
 use Study\Domain\Entities\Account;
-use Study\Domain\Entities\Holder;
-use Study\Domain\Entities\Address;
 use Study\Domain\Entities\AccountCurrent;
 use Study\Infrastructure\Persistence\ConnectionFactory;
+use Study\Domain\Repository\AccountCurrentRepository as AccountCurrentRepositoryInterface;
 /**
  * Class AccountCurrentRepository
  * @package Study\Infrastructure\Repository
  */
-class AccountCurrentRepository implements \Study\Domain\Repository\AccountCurrentRepository
+class AccountCurrentRepository implements AccountCurrentRepositoryInterface
 {
     /**
      * @var ConnectionFactory
      */
     private $connectionFactory;
+
+    /**
+     * @var HolderRepository
+     */
+    private $holderRepository;
 
     /**
      * HolderRepository constructor.
@@ -27,6 +31,7 @@ class AccountCurrentRepository implements \Study\Domain\Repository\AccountCurren
     public function __construct(ConnectionFactory $connectionFactory)
     {
         $this->connectionFactory = $connectionFactory;
+        $this->holderRepository = new HolderRepository($this->connectionFactory);
     }
 
     /**
@@ -38,9 +43,6 @@ class AccountCurrentRepository implements \Study\Domain\Repository\AccountCurren
         $query = "
             SELECT * FROM account_current AS ac
             INNER JOIN account AS a ON a.id = ac.id 
-            INNER JOIN person AS p ON a.id_holder = p.id
-            INNER JOIN holder AS h ON p.id = h.id   
-            INNER JOIN address AS ad ON h.id_address = ad.id
             WHERE a.id = :id;
         ";
         $this->connectionFactory->prepare($query)
@@ -58,9 +60,6 @@ class AccountCurrentRepository implements \Study\Domain\Repository\AccountCurren
         $query = "
             SELECT * FROM account_current AS ac
             INNER JOIN account AS a ON a.id = ac.id 
-            INNER JOIN person AS p ON a.id_holder = p.id
-            INNER JOIN holder AS h ON p.id = h.id   
-            INNER JOIN address AS ad ON h.id_address = ad.id;
         ";
         $this->connectionFactory->query($query);
         return $this->hydrateAccount();
@@ -69,26 +68,16 @@ class AccountCurrentRepository implements \Study\Domain\Repository\AccountCurren
     /**
      * @return array
      */
-    private function hydrateAccount()
+    private function hydrateAccount(): array
     {
         $accountList = [];
         $data = $this->connectionFactory->getAll();
         foreach ($data as $item) {
             $accountList[] = new AccountCurrent(
                 (int) $item['id'],
-                new Holder(
-                    (int) $item['id_holder'],
-                    (string) $item['cpf'],
-                    (string) $item['name'],
-                    (string) $item['last_name'],
-                    new Address(
-                        (int) $item['id_address'],
-                        (string) $item['city'],
-                        (string) $item['road'],
-                        (int) $item['number']
-                    )
-                ),
-                (float) $item['balance']
+                $this->holderRepository->find((int) $item['holder_id']),
+                (float) $item['balance'],
+                (string) $item['type']
             );
 
         }
@@ -96,50 +85,44 @@ class AccountCurrentRepository implements \Study\Domain\Repository\AccountCurren
     }
 
     /**
-     * @param Account $accountCurrent
+     * @param Account $account
      * @return int|null
      */
-    public function save(Account $accountCurrent): ?int
+    public function save(Account $account): ?int
     {
         $this->connectionFactory->beginTransaction();
-
-        $isAccountCurrentCreated = false;
-
-        $query = "INSERT INTO account (id_holder, balance) VALUES (:id_holder, :balance);";
+        $query = "INSERT INTO account (holder_id, balance, type) VALUES (:holder_id, :balance, :type);";
         $this->connectionFactory->prepare($query)
-            ->bind(':id_holder', $accountCurrent->getHolder()->getId())
-            ->bind(':balance', $accountCurrent->getBalance());
-
+            ->bind(':holder_id', $account->getHolder()->getId())
+            ->bind(':balance', $account->getBalance())
+            ->bind(':type', $account->getType());
         $isAccountCreated = $this->connectionFactory->execute();
-
-        if($isAccountCreated) {
-            $isAccountId = $this->connectionFactory->getLastInsertedId();
-
-            $query = "INSERT INTO account_current (id) VALUES (:id);";
-            $this->connectionFactory->prepare($query)
-                ->bind(':id', $isAccountId);
-
-            $isAccountCurrentCreated = $this->connectionFactory->execute();
+        if (!$isAccountCreated) {
+            $this->connectionFactory->rollBack();
+            return null;
         }
-
-        if($isAccountCurrentCreated) {
-            $this->connectionFactory->commit();
-            return $isAccountCreated;
+        $isAccountId = $this->connectionFactory->getLastInsertedId();
+        $query = "INSERT INTO account_current (id) VALUES (:id);";
+        $this->connectionFactory->prepare($query)
+            ->bind(':id', $isAccountId);
+        $isAccountCurrentCreated = $this->connectionFactory->execute();
+        if (!$isAccountCurrentCreated) {
+            $this->connectionFactory->rollBack();
+            return null;
         }
-
-        $this->connectionFactory->rollBack();
-        return null;
+        $this->connectionFactory->commit();
+        return $isAccountId;
     }
 
     /**
-     * @param Account $accountCurrent
+     * @param Account $account
      * @return bool
      */
-    public function remove(Account $accountCurrent): bool
+    public function remove(Account $account): bool
     {
         $query = "DELETE FROM account WHERE id = :id";
         $this->connectionFactory->prepare($query)
-            ->bind(':id', $accountCurrent->getId());
+            ->bind(':id', $account->getId());
 
         return $this->connectionFactory->execute();
     }

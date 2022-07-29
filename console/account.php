@@ -20,3 +20,4 @@ $accountRepository = new AccountCurrentRepository($connectionFactory);
 $createAccountUseCase = new CreateAccount($accountRepository, $holderRepository);
 $createAccountCommand = new CreateAccountCommand($createAccountUseCase);
 $response = $createAccountCommand->handle();
+var_dump($response);

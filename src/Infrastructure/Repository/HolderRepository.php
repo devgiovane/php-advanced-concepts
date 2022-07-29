@@ -5,13 +5,13 @@ namespace Study\Infrastructure\Repository;
 
 
 use Study\Domain\Entities\Holder;
-use Study\Domain\Entities\Address;
 use Study\Infrastructure\Persistence\ConnectionFactory;
+use Study\Domain\Repository\HolderRepository as HolderRepositoryInterface;
 /**
  * Class HolderRepository
  * @package Study\Infrastructure\Repository
  */
-class HolderRepository implements \Study\Domain\Repository\HolderRepository
+class HolderRepository implements HolderRepositoryInterface
 {
     /**
      * @var ConnectionFactory
@@ -42,7 +42,6 @@ class HolderRepository implements \Study\Domain\Repository\HolderRepository
         $query = "
             SELECT * FROM person AS p 
             INNER JOIN holder AS h ON p.id = h.id 
-            LEFT JOIN address AS a ON h.id_address = a.id
             WHERE p.id = :id;
         ";
         $this->connectionFactory->prepare($query)
@@ -60,7 +59,6 @@ class HolderRepository implements \Study\Domain\Repository\HolderRepository
         $query = "
             SELECT * FROM person AS p 
             INNER JOIN holder AS h ON p.id = h.id
-            LEFT JOIN address AS a ON h.id_address = a.id;
         ";
         $this->connectionFactory->query($query);
         return $this->hydrateHolder();
@@ -79,12 +77,8 @@ class HolderRepository implements \Study\Domain\Repository\HolderRepository
                 (string) $item['cpf'],
                 (string) $item['name'],
                 (string) $item['last_name'],
-                new Address(
-                    (int) $item['id_address'],
-                    (string) $item['city'],
-                    (string) $item['road'],
-                    (int) $item['number']
-                )
+                $this->addressRepository->find((int) $item['address_id']),
+                (string) $item['type']
             );
         }
         return $holdersList;
@@ -97,39 +91,32 @@ class HolderRepository implements \Study\Domain\Repository\HolderRepository
     public function save(Holder $holder): ?int
     {
         $this->connectionFactory->beginTransaction();
-
         $isAddressCreated = $this->addressRepository->save($holder->getAddress());
         if (!$isAddressCreated) {
             $this->connectionFactory->rollBack();
             return null;
         }
-
-        $query = "INSERT INTO person (cpf, name, last_name) VALUES (:cpf, :name, :last_name);";
+        $query = "INSERT INTO person (cpf, name, last_name, type) VALUES (:cpf, :name, :last_name, :type);";
         $this->connectionFactory->prepare($query)
             ->bind(':cpf', $holder->getCpf())
             ->bind(':name', $holder->getName())
-            ->bind(':last_name', $holder->getLastName());
-
+            ->bind(':last_name', $holder->getLastName())
+            ->bind(':type', $holder->getType());
         $isPersonCreated = $this->connectionFactory->execute();
         if (!$isPersonCreated) {
             $this->connectionFactory->rollBack();
             return null;
         }
-
         $idPersonId = $this->connectionFactory->getLastInsertedId();
-
-        $query = "INSERT INTO holder (id, id_address) VALUES (:id, :id_address)";
+        $query = "INSERT INTO holder (id, address_id) VALUES (:id, :address_id)";
         $this->connectionFactory->prepare($query)
             ->bind(':id', $idPersonId)
-            ->bind(':id_address', $isAddressCreated);
-
+            ->bind(':address_id', $isAddressCreated);
         $isHolderCreated = $this->connectionFactory->execute();
-
         if (!$isHolderCreated) {
             $this->connectionFactory->rollBack();
             return null;
         }
-
         $this->connectionFactory->commit();
         return $idPersonId;
     }

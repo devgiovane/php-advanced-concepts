@@ -8,9 +8,11 @@ use Study\Domain\Entities\AccountCurrent;
 use Study\Domain\Entities\AccountSaving;
 use Study\Domain\Repository\HolderRepository;
 use Study\Domain\Repository\AccountRepository;
-use Study\Domain\Exceptions\InvalidAccountTypeException;
-
-
+use Study\Domain\ValueObjects\AccountType;
+/**
+ * Class CreateAccount
+ * @package Study\Application\UseCases\CreateAccount
+ */
 final class CreateAccount
 {
     /**
@@ -31,11 +33,9 @@ final class CreateAccount
 
     public function handle(InputBoundary $inputBoundary): OutputBoundary
     {
-        if (!in_array($inputBoundary->getType(), ['saving', 'current'])) {
-            throw new InvalidAccountTypeException($inputBoundary->getType());
-        }
+        $accountType = new AccountType($inputBoundary->getType());
         $holder = $this->holderRepository->find($inputBoundary->getHolder());
-        if ($inputBoundary->getType() === 'saving') {
+        if ($accountType->getType() === AccountType::SAVING) {
             $account = new AccountSaving(null, $holder, $inputBoundary->getBalance());
         } else {
             $account = new AccountCurrent(null, $holder, $inputBoundary->getBalance());

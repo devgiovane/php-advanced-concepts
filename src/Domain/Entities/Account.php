@@ -28,16 +28,23 @@ abstract class Account
     private $balance;
 
     /**
+     * @var string
+     */
+    private $type;
+
+    /**
      * Account constructor.
      * @param int|null $id
      * @param Holder $holder
      * @param float $balance
+     * @param string $type
      */
-    public function __construct(?int $id, Holder $holder, float $balance)
+    public function __construct(?int $id, Holder $holder, float $balance, string $type)
     {
         $this->id = $id;
         $this->holder = $holder;
         $this->balance = $balance;
+        $this->type = $type;
     }
 
     /**
@@ -86,6 +93,22 @@ abstract class Account
     public function setBalance(float $balance): void
     {
         $this->balance = $balance;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     */
+    public function setType(string $type): void
+    {
+        $this->type = $type;
     }
 
     /**

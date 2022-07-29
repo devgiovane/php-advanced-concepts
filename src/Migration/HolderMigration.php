@@ -34,9 +34,9 @@ final class HolderMigration extends Migration implements MigrationInterface
         $query = "
             CREATE TABLE IF NOT EXISTS holder (
                 id INTEGER PRIMARY KEY NOT NULL, 
-                id_address INT NOT NULL, 
+                address_id INT NOT NULL, 
                 FOREIGN KEY(id) REFERENCES person(id) ON DELETE CASCADE, 
-                FOREIGN KEY(id_address) REFERENCES address(id) ON DELETE SET NULL
+                FOREIGN KEY(address_id) REFERENCES address(id) ON DELETE SET NULL
             );
         ";
         $this->connectionFactory->prepare($query);
