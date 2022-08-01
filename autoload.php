@@ -6,6 +6,7 @@ spl_autoload_register(function (string $nameClass) {
     $path .= '.php';
 
     if(file_exists($path)) {
+        /** @noinspection PhpIncludeInspection */
         require_once $path;
     }
 });

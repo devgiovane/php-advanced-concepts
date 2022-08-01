@@ -16,6 +16,12 @@ interface AccountRepository
     public function find(int $id);
 
     /**
+     * @param int $personID
+     * @return mixed
+     */
+    public function findByPerson(int $personID);
+
+    /**
      * @return array
      */
     public function findAll(): array;
@@ -25,6 +31,12 @@ interface AccountRepository
      * @return int|null
      */
     public function save(Account $account): ?int;
+
+    /**
+     * @param Account $account
+     * @return bool
+     */
+    public function update(Account $account): bool;
 
     /**
      * @param Account $account

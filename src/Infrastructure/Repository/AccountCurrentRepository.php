@@ -53,6 +53,24 @@ class AccountCurrentRepository implements AccountCurrentRepositoryInterface
     }
 
     /**
+     * @param int $personID
+     * @return AccountCurrent
+     */
+    public function findByPerson(int $personID): AccountCurrent
+    {
+        $query = "
+            SELECT * FROM account_current AS ac
+            INNER JOIN account AS a ON a.id = ac.id 
+            WHERE a.person_id = :person_id;
+        ";
+        $this->connectionFactory->prepare($query)
+            ->bind(':person_id', $personID);
+
+        $this->connectionFactory->execute();
+        return $this->hydrateAccount()[0];
+    }
+
+    /**
      * @return array
      */
     public function findAll(): array
@@ -118,6 +136,19 @@ class AccountCurrentRepository implements AccountCurrentRepositoryInterface
      * @param Account $account
      * @return bool
      */
+    public function update(Account $account): bool
+    {
+        $query = "UPDATE account SET balance = :balance WHERE id = :id;";
+        $this->connectionFactory->prepare($query)
+            ->bind(':balance', $account->getBalance())
+            ->bind(':id', $account->getId());
+        return $this->connectionFactory->execute();
+    }
+
+    /**
+     * @param Account $account
+     * @return bool
+     */
     public function remove(Account $account): bool
     {
         $query = "DELETE FROM account WHERE id = :id";
@@ -126,4 +157,5 @@ class AccountCurrentRepository implements AccountCurrentRepositoryInterface
 
         return $this->connectionFactory->execute();
     }
+
 }

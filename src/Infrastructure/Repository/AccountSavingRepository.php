@@ -5,8 +5,6 @@ namespace Study\Infrastructure\Repository;
 
 
 use Study\Domain\Entities\Account;
-use Study\Domain\Entities\Holder;
-use Study\Domain\Entities\Address;
 use Study\Domain\Entities\AccountSaving;
 use Study\Infrastructure\Persistence\ConnectionFactory;
 use Study\Domain\Repository\AccountSavingRepository as AccountSavingRepositoryInterface;
@@ -49,6 +47,24 @@ class AccountSavingRepository implements AccountSavingRepositoryInterface
         ";
         $this->connectionFactory->prepare($query)
             ->bind(':id', $id);
+
+        $this->connectionFactory->execute();
+        return $this->hydrateAccount()[0];
+    }
+
+    /**
+     * @param int $personID
+     * @return AccountSaving
+     */
+    public function findByPerson(int $personID): AccountSaving
+    {
+        $query = "
+            SELECT * FROM account_saving AS acs
+            INNER JOIN account AS a ON a.id = acs.id 
+            WHERE a.person_id = :person_id;
+        ";
+        $this->connectionFactory->prepare($query)
+            ->bind(':person_id', $personID);
 
         $this->connectionFactory->execute();
         return $this->hydrateAccount()[0];
@@ -120,6 +136,19 @@ class AccountSavingRepository implements AccountSavingRepositoryInterface
      * @param Account $account
      * @return bool
      */
+    public function update(Account $account): bool
+    {
+        $query = "UPDATE account SET balance = :balance WHERE id = :id;";
+        $this->connectionFactory->prepare($query)
+            ->bind(':balance', $account->getBalance())
+            ->bind(':id', $account->getId());
+        return $this->connectionFactory->execute();
+    }
+
+    /**
+     * @param Account $account
+     * @return bool
+     */
     public function remove(Account $account): bool
     {
         $query = "DELETE FROM account WHERE id = :id";
@@ -128,5 +157,4 @@ class AccountSavingRepository implements AccountSavingRepositoryInterface
 
         return $this->connectionFactory->execute();
     }
-
 }

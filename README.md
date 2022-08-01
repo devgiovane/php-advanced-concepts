@@ -20,7 +20,9 @@
 php console/database.php up // create database
 php console/database.php down // drop database
 php console/holder.php // create holder
+php console/employee.php // create employee
 php console/account.php // create account
+php console/payment.php // make payment
 ```
 
 ### Create by
