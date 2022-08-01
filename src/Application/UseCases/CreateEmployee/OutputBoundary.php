@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Study\Application\UseCases\CreateHolder;
+namespace Study\Application\UseCases\CreateEmployee;
 /**
  * Class OutputBoundary
- * @package Study\Application\UseCases\CreateHolder
+ * @package Study\Application\UseCases\CreateEmployee
  */
 final class OutputBoundary
 {
@@ -29,5 +29,4 @@ final class OutputBoundary
     {
         return $this->id;
     }
-
 }

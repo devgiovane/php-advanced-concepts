@@ -34,11 +34,11 @@ final class AccountMigration extends Migration implements MigrationInterface
         $query = "
             CREATE TABLE IF NOT EXISTS account (
                 id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
-                holder_id INT NOT NULL, 
+                person_id INT NOT NULL, 
                 balance FLOAT,
                 type TEXT NOT NULL,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY(holder_id) REFERENCES holder(id) ON DELETE CASCADE
+                FOREIGN KEY(person_id) REFERENCES person(id) ON DELETE CASCADE
              );
         ";
         $this->connectionFactory->prepare($query);

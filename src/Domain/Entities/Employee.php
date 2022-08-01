@@ -27,6 +27,7 @@ final class Employee extends Person
      * @param string $lastName
      * @param string $office
      * @param float $wage
+     * @param string $type
      */
     public function __construct(?int $id, string $cpf, string $name, string $lastName, string $office, float $wage, string $type = "employee")
     {

@@ -2,8 +2,10 @@
 
 
 namespace Study\Domain\Entities;
-
-
+/**
+ * Class Address
+ * @package Study\Domain\Entities
+ */
 class Address
 {
     /**
@@ -82,6 +84,9 @@ class Address
         return $this->number;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return "{$this->getRoad()}, {$this->getNumber()}, {$this->getCity()}";

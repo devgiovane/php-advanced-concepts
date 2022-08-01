@@ -17,5 +17,7 @@ $holderRepository = new HolderRepository($connectionFactory);
 
 $createHolderUseCase = new CreateHolder($holderRepository);
 $createHolderCommand = new CreateHolderCommand($createHolderUseCase);
-$response = $createHolderCommand->handle();
+$response = $createHolderCommand->handle(
+    "John", "Doe", "475.530.130-05", "Chicago", "La Sale", 1034
+);
 var_dump($response);

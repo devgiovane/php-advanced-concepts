@@ -2,8 +2,10 @@
 
 
 namespace Study\Domain\Exceptions;
-
-
+/**
+ * Class InvalidValueException
+ * @package Study\Domain\Exceptions
+ */
 final class InvalidValueException extends \InvalidArgumentException
 {
     public function __construct()

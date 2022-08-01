@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Study\Application\UseCases\CreateHolder;
+namespace Study\Application\UseCases\CreateEmployee;
 /**
  * Class InputBoundary
- * @package Study\Application\UseCases\CreateHolder
+ * @package Study\Application\UseCases\CreateEmployee
  */
 final class InputBoundary
 {
@@ -26,35 +26,28 @@ final class InputBoundary
     /**
      * @var string
      */
-    private $city;
+    private $office;
 
     /**
-     * @var string
+     * @var float
      */
-    private $road;
-
-    /**
-     * @var int
-     */
-    private $number;
+    private $wage;
 
     /**
      * InputBoundary constructor.
      * @param string $name
      * @param string $lastName
      * @param string $cpf
-     * @param string $city
-     * @param string $road
-     * @param int $number
+     * @param string $office
+     * @param float $wage
      */
-    public function __construct(string $name, string $lastName, string $cpf, string $city, string $road, int $number)
+    public function __construct(string $name, string $lastName, string $cpf, string $office, float $wage)
     {
         $this->name = $name;
         $this->lastName = $lastName;
         $this->cpf = $cpf;
-        $this->city = $city;
-        $this->road = $road;
-        $this->number = $number;
+        $this->office = $office;
+        $this->wage = $wage;
     }
 
     /**
@@ -84,25 +77,16 @@ final class InputBoundary
     /**
      * @return string
      */
-    public function getCity(): string
+    public function getOffice(): string
     {
-        return $this->city;
+        return $this->office;
     }
 
     /**
-     * @return string
+     * @return float
      */
-    public function getRoad(): string
+    public function getWage(): float
     {
-        return $this->road;
+        return $this->wage;
     }
-
-    /**
-     * @return int
-     */
-    public function getNumber(): int
-    {
-        return $this->number;
-    }
-
 }

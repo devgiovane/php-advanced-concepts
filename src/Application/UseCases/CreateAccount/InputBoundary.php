@@ -9,7 +9,7 @@ final class InputBoundary
     /**
      * @var int
      */
-    private $holder;
+    private $person;
 
     /**
      * @var float
@@ -23,13 +23,13 @@ final class InputBoundary
 
     /**
      * InputBoundary constructor.
-     * @param int $holder
+     * @param int $person
      * @param float $balance
      * @param string $type
      */
-    public function __construct(int $holder, float $balance, string $type)
+    public function __construct(int $person, float $balance, string $type)
     {
-        $this->holder = $holder;
+        $this->person = $person;
         $this->balance = $balance;
         $this->type = $type;
     }
@@ -37,9 +37,9 @@ final class InputBoundary
     /**
      * @return int
      */
-    public function getHolder(): int
+    public function getPerson(): int
     {
-        return $this->holder;
+        return $this->person;
     }
 
     /**

@@ -4,11 +4,9 @@
 namespace Study\Domain\Entities;
 
 
-
 use Study\Infrastructure\Repository\EmployeeRepository;
 use Study\Infrastructure\Repository\HolderRepository;
 use Study\Infrastructure\Repository\PrincipalRepository;
-
 /**
  * Class Person
  * @package Study\Domain\Entities

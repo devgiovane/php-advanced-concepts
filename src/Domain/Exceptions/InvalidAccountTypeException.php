@@ -2,8 +2,10 @@
 
 
 namespace Study\Domain\Exceptions;
-
-
+/**
+ * Class InvalidAccountTypeException
+ * @package Study\Domain\Exceptions
+ */
 final class InvalidAccountTypeException extends \DomainException
 {
     public function __construct(string $type)

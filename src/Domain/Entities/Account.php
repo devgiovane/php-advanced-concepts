@@ -6,21 +6,27 @@ namespace Study\Domain\Entities;
 
 use Study\Domain\Exceptions\InvalidValueException;
 use Study\Domain\Exceptions\InsufficientFundsException;
+use Study\Infrastructure\Repository\AccountSavingRepository;
+use Study\Infrastructure\Repository\AccountCurrentRepository;
 /**
  * Class Account
  * @package Study\Domain\Entities
  */
 abstract class Account
 {
+    public const TYPES = [
+        'saving' => AccountSavingRepository::class,
+        'current' => AccountCurrentRepository::class
+    ];
     /**
      * @var int|null
      */
     protected $id;
 
     /**
-     * @var Holder
+     * @var Person
      */
-    private $holder;
+    private $person;
 
     /**
      * @var float
@@ -35,14 +41,14 @@ abstract class Account
     /**
      * Account constructor.
      * @param int|null $id
-     * @param Holder $holder
+     * @param Person $person
      * @param float $balance
      * @param string $type
      */
-    public function __construct(?int $id, Holder $holder, float $balance, string $type)
+    public function __construct(?int $id, Person $person, float $balance, string $type)
     {
         $this->id = $id;
-        $this->holder = $holder;
+        $this->person = $person;
         $this->balance = $balance;
         $this->type = $type;
     }
@@ -64,19 +70,19 @@ abstract class Account
     }
 
     /**
-     * @return Holder
+     * @return Person
      */
-    public function getHolder(): Holder
+    public function getPerson(): Person
     {
-        return $this->holder;
+        return $this->person;
     }
 
     /**
-     * @param Holder $holder
+     * @param Person $person
      */
-    public function setHolder(Holder $holder): void
+    public function setPerson(Person $person): void
     {
-        $this->holder = $holder;
+        $this->person = $person;
     }
 
     /**

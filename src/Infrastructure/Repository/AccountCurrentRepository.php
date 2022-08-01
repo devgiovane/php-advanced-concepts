@@ -75,7 +75,7 @@ class AccountCurrentRepository implements AccountCurrentRepositoryInterface
         foreach ($data as $item) {
             $accountList[] = new AccountCurrent(
                 (int) $item['id'],
-                $this->personRepository->find((int) $item['holder_id']),
+                $this->personRepository->find((int) $item['person_id']),
                 (float) $item['balance'],
                 (string) $item['type']
             );
@@ -91,9 +91,9 @@ class AccountCurrentRepository implements AccountCurrentRepositoryInterface
     public function save(Account $account): ?int
     {
         $this->connectionFactory->beginTransaction();
-        $query = "INSERT INTO account (holder_id, balance, type) VALUES (:holder_id, :balance, :type);";
+        $query = "INSERT INTO account (person_id, balance, type) VALUES (:person_id, :balance, :type);";
         $this->connectionFactory->prepare($query)
-            ->bind(':holder_id', $account->getHolder()->getId())
+            ->bind(':person_id', $account->getPerson()->getId())
             ->bind(':balance', $account->getBalance())
             ->bind(':type', $account->getType());
         $isAccountCreated = $this->connectionFactory->execute();

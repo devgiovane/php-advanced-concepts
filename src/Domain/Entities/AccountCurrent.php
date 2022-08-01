@@ -14,13 +14,13 @@ final class AccountCurrent extends Account
     /**
      * AccountCurrent constructor.
      * @param int|null $id
-     * @param Holder $holder
+     * @param Person $person
      * @param float $balance
      * @param string $type
      */
-    public function __construct(?int $id, Holder $holder, float $balance, string $type = "current")
+    public function __construct(?int $id, Person $person, float $balance, string $type = "current")
     {
-        parent::__construct($id, $holder, $balance, $type);
+        parent::__construct($id, $person, $balance, $type);
     }
 
     /**

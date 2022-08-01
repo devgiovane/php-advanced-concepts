@@ -86,7 +86,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
     public function save(Employee $employee): ?int
     {
         $this->connectionFactory->beginTransaction();
-        $query = "INSERT INTO person (cpf, name, last_name) VALUES (:cpf, :name, :last_name, :type);";
+        $query = "INSERT INTO person (cpf, name, last_name, type) VALUES (:cpf, :name, :last_name, :type);";
         $this->connectionFactory->prepare($query)
             ->bind(':cpf', $employee->getCpf())
             ->bind(':name', $employee->getName())
