@@ -37,7 +37,11 @@ final class MakePayment
      * @param AccountCurrentRepository $accountCurrentRepository
      * @param AccountSavingRepository $accountSavingRepository
      */
-    public function __construct(PersonRepository $personRepository, AccountCurrentRepository $accountCurrentRepository, AccountSavingRepository $accountSavingRepository)
+    public function __construct(
+        PersonRepository $personRepository,
+        AccountCurrentRepository $accountCurrentRepository,
+        AccountSavingRepository $accountSavingRepository
+    )
     {
         $this->personRepository = $personRepository;
         $this->accountCurrentRepository = $accountCurrentRepository;
@@ -58,8 +62,10 @@ final class MakePayment
         $accountEmployee = $this->accountSavingRepository->findByPerson($employee->getId());
 
         $account->transfer($employee->getWage(), $accountEmployee);
+
         $this->accountSavingRepository->update($accountEmployee);
         $this->accountCurrentRepository->update($account);
-        return new OutputBoundary();
+        return new OutputBoundary("success");
     }
+
 }

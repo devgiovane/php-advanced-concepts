@@ -4,6 +4,7 @@
 namespace Study\Application\UseCases\MakePayment;
 /**
  * Class InputBoundary
+ * @package Study\Application\UseCases\MakePayment
  */
 final class InputBoundary
 {

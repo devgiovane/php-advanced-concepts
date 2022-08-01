@@ -31,7 +31,7 @@ final class MakePaymentCommand
         $inputBoundary = new InputBoundary($account, $employee);
         $output = $this->useCase->handle($inputBoundary);
         return [
-            'success' => true
+            'success' => $output->getStatus()
         ];
     }
 }

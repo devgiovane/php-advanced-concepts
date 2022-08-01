@@ -6,9 +6,9 @@ namespace Study\Application\UseCases\CreateAccount;
 
 use Study\Domain\Entities\AccountCurrent;
 use Study\Domain\Entities\AccountSaving;
+use Study\Domain\ValueObjects\AccountType;
 use Study\Domain\Repository\AccountRepository;
 use Study\Domain\Repository\PersonRepository;
-use Study\Domain\ValueObjects\AccountType;
 /**
  * Class CreateAccount
  * @package Study\Application\UseCases\CreateAccount
@@ -52,4 +52,5 @@ final class CreateAccount
         $idSaving = $this->accountRepository->save($account);
         return new OutputBoundary($idSaving);
     }
+
 }
